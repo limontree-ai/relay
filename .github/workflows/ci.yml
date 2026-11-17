@@ -9,8 +9,8 @@ jobs:
   node:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -24,12 +24,12 @@ jobs:
   sql:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: check for sql tests
         id: tests
         run: |
           if [ -n "$(find supabase/tests -name '*.sql' | head -1)" ]; then echo "found=true" >> "$GITHUB_OUTPUT"; fi
-      - uses: supabase/setup-cli@v1
+      - uses: supabase/setup-cli@v3
         if: steps.tests.outputs.found == 'true'
         with:
           version: latest
