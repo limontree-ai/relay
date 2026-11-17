@@ -7,16 +7,17 @@ Plugin facts below follow https://code.claude.com/docs/en/plugins/publish and ht
 ## Files
 
 ```
-tandem/                                   the monorepo root is the marketplace
+relay/                                    the monorepo root is the marketplace
   .claude-plugin/marketplace.json
   plugin/
     .claude-plugin/plugin.json
     .mcp.json
+    hooks/hooks.json                      room news before each prompt (see Hooks)
     skills/
       join/SKILL.md
       run-step/SKILL.md
-  packages/cli/                           npm package @ORG/tandem
-    src/index.ts                          `login`, `logout`, `mcp`, `status`
+  packages/cli/                           npm package relay-ai
+    src/index.ts                          `login`, `logout`, `status`, `doctor`, `join`, `news`, `mcp`
     src/login.ts
     src/mcp.ts                            the MCP server (stdio)
     src/api.ts                            small fetch client with the device token
@@ -27,13 +28,13 @@ tandem/                                   the monorepo root is the marketplace
 
 ```json
 {
-  "name": "tandem",
-  "owner": { "name": "ORG" },
+  "name": "relay",
+  "owner": { "name": "limontree" },
   "plugins": [
     {
-      "name": "tandem",
+      "name": "relay",
       "source": "./plugin",
-      "description": "Join a tandem room and run workflow steps on this device with your own Claude."
+      "description": "Join a relay room and run workflow steps on this device with your own Claude."
     }
   ]
 }
@@ -42,39 +43,59 @@ tandem/                                   the monorepo root is the marketplace
 `plugin/.claude-plugin/plugin.json`
 
 ```json
-{ "name": "tandem", "version": "0.1.0", "description": "Live group workflows that run on your own Claude." }
+{ "name": "relay", "version": "0.1.0", "description": "Live group workflows that run on your own Claude." }
 ```
 
 `plugin/.mcp.json`. The CLI version is pinned, so a plugin version always runs a known MCP server.
 
 ```json
-{ "mcpServers": { "tandem": { "command": "npx", "args": ["-y", "@ORG/tandem@0.1.0", "mcp"] } } }
+{ "mcpServers": { "relay": { "command": "npx", "args": ["-y", "relay-ai@0.1.0", "mcp"], "timeout": 600000 } } }
 ```
 
-Install:
+Install, from inside Claude Code (one command, then pair):
 
 ```
-claude plugin marketplace add ORG/tandem
-claude plugin install tandem@tandem
-npx @ORG/tandem login
+/plugin install relay --marketplace limontree-ai/relay
+npx relay-ai login
 ```
 
-## Pairing (`tandem login`)
+Older Claude Code: `claude plugin marketplace add limontree-ai/relay` then `claude plugin install relay@relay`. Turn on auto update for the marketplace in `/plugin`. Check everything with `npx relay-ai doctor`: Node version, Claude Code version, signed in to claude.ai, OS, paired, server reachable, computer use available.
+
+### Other agents (Codex, Cursor, Gemini CLI, OpenCode)
+
+The same MCP server and skills work outside Claude Code, as a beta path:
+
+```
+npx skills add limontree-ai/relay      skills for any agent that reads Agent Skills
+npx relay-ai join <invite-link>        pairs if needed, then prints the MCP config for this agent
+```
+
+`join` writes nothing without asking. It prints the agent's MCP config snippet (`npx -y relay-ai@0.1.0 mcp`) and the one line to paste. Channels and hooks are Claude Code only, so other agents always poll. Screen steps need Claude Code on macOS.
+
+### Dependencies
+
+`relay-ai` depends only on the official MCP SDK. Everything else uses Node built-ins (`fetch`, `crypto`, `fs`). The device token goes in the OS keychain when one is available, otherwise in the credentials file below.
+
+### What the plugin sends where
+
+The README lists every network call: our API (`RELAY_API_URL`) for pairing, joining, heartbeat, steps, approvals, status and results. Nothing else. This is required for the Anthropic plugin directory, which scans every version for undisclosed network calls. Validate before each release with `claude plugin validate . --strict`.
+
+## Pairing (`npx relay-ai login`)
 
 1. CLI calls `POST /api/device/pair/start` with `{ name, platform }`. `name` defaults to the computer name. `platform` is `macos`, `windows` or `linux`
 2. Server returns `{ pair_code: "KQ7M-4XRT", poll_token, verify_url }`. Code lives 10 minutes
 3. CLI prints the URL and code. The member opens it, signs in, checks the device name, and clicks Pair
-4. CLI polls `POST /api/device/pair/poll` with `poll_token` every 3 seconds and receives `{ device_id, token }`
-5. CLI writes credentials to `~/.config/tandem/credentials.json` (Windows: `%APPDATA%\tandem\credentials.json`), file mode 0600: `{ api_url, device_id, token }`
+4. CLI polls `POST /api/device/pair/poll` with `poll_token` every `interval` seconds. It gets `authorization_pending` until the member confirms (backing off on `slow_down`), then `{ device_id, token }` once (RFC 8628 style)
+5. CLI stores the token in the OS keychain when available. Otherwise, and for `api_url` and `device_id`, it writes `~/.config/relay/credentials.json` (Windows: `%APPDATA%\relay\credentials.json`), file mode 0600: `{ api_url, device_id, token }`
 
-`tandem logout` deletes the file and calls `POST /api/device/revoke`. `tandem status` prints the device name, rooms and whether the server is reachable.
+`npx relay-ai logout` deletes the file and calls `POST /api/device/revoke`. `npx relay-ai status` prints the device name, rooms and whether the server is reachable.
 
 ## MCP server
 
 - stdio transport, built with the official TypeScript MCP SDK
-- On start it loads credentials. With no credentials every tool returns: "This device is not paired. Run `npx @ORG/tandem login` in a terminal, then try again."
+- On start it loads credentials. With no credentials every tool returns: "This device is not paired. Run `npx relay-ai login` in a terminal, then try again."
 - After `join_room` it sends `POST /api/device/heartbeat` every 20 seconds until the process exits. That is how the room knows "Maya's Claude is open"
-- Every call waits at most 45 seconds and then returns, so no call hits a client timeout. Long waits are loops in the skill
+- Every call waits at most 45 seconds and then returns. Claude Code moves a tool call to the background after 2 minutes, so no wait may ever pass 90 seconds. Long waits are loops in the skill. `"timeout"` in `.mcp.json` is a safety net only
 - It never logs step text or results. It logs only tool names, ids and timings to stderr
 
 ### Tools
@@ -145,10 +166,10 @@ Capabilities are saved on the device each time it joins. Routing uses the latest
 ```markdown
 ---
 name: join
-description: Join a tandem room and run the workflow steps assigned to this device. Use when the user says join, tandem, or gives a tandem room link.
+description: Join a relay room and run the workflow steps assigned to this device. Use when the user says join, relay, or gives a relay room link.
 ---
 
-# Join a tandem room
+# Join a relay room
 
 1. Call `join_room` with the room the user named. For `capabilities`, include `shell`. Include `browser` only if you have a browser tool. Include `screen` only if this is macOS and you have the computer use tool.
 2. Tell the user in one line: the room, this device's name, and whether it is allowed. If it is not allowed, show the link from the message and stop.
@@ -168,7 +189,7 @@ Keep your own messages short. Each step's details are in the tool results; do no
 ```markdown
 ---
 name: run-step
-description: How to run one tandem workflow step safely on this device and report back. Used by the join skill.
+description: How to run one relay workflow step safely on this device and report back. Used by the join skill.
 ---
 
 # Run one step
@@ -201,3 +222,23 @@ Rules that always apply:
 | Claude Code's own permission prompts still appear on the device | Our approval does not bypass them. Docs suggest members allow common read only commands in their own settings. Measured in spike S1 |
 | Long sessions grow context | The join skill keeps messages short. Spike S1 measures how many steps fit. If needed, the skill tells the user to run `/compact` after a set number of steps |
 | Plan limits | Steps prefer shell and MCP over the screen. Nothing else we can do |
+
+## Channels (push, when available)
+
+Claude Code channels (research preview) let an MCP server push an event into the running session. The MCP server declares the `claude/channel` capability. When the session was started with `claude --channels plugin:relay@relay`, the server sends a `notifications/claude/channel` event as soon as a step is ready for this device, and Claude calls `get_next_step` at once. Without `--channels`, nothing changes: the loop polls.
+
+Channels can also relay Claude Code's own permission prompts to another device. Spike S1 tests whether the device owner can answer them from the approval page. Channels need a claude.ai login, are off on Bedrock, Vertex and Foundry, and Team or Enterprise admins must allow them.
+
+## Hooks (room news)
+
+`hooks/hooks.json` runs `npx -y relay-ai@0.1.0 news` on `SessionStart` and `UserPromptSubmit`. It prints at most 3 short lines and returns in under 1 second (cached, 2 second timeout, silent on any error):
+
+- "A step in demo-day is waiting for this Mac. Type /relay:join demo-day to run it."
+- "Maya asked for your approval on step 2."
+- "Sam edited demo-day 4 minutes ago."
+
+It never prints step text. It prints nothing if the device is not paired or has nothing pending.
+
+## Permission prompts
+
+Claude Code's own prompts (file edits, commands, computer use per app) pause the loop until someone at the device answers. Our approval never bypasses them. The `/setup` page and `doctor` suggest an allowlist for common read only commands in the member's own settings, and explain `acceptEdits`. Spike S1 counts prompts per step.

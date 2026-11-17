@@ -41,8 +41,24 @@ On a push to the room's branch that touches `workflows/*/workflow.json`:
 - Changed file and our draft is clean: replace the draft with the repo version. Everyone in the editor sees the change live
 - Changed file and our draft is dirty: keep the draft, store the new head, and show a banner: "Someone changed this workflow in the repo. Load the repo version (your unsaved changes are lost) or keep yours (saving will replace the repo version)." Keeping yours commits on top of the new head; nothing is merged automatically
 - Deleted file: the workflow is marked removed in the room, read only, with Restore (commits it back)
-- Pushes made by our own app are ignored by matching the commit sha we just wrote
+- Pushes made by our own app are ignored when `sender.login` is `<app-slug>[bot]`, and also when the commit sha is one we just wrote
 
 ## Not in the MVP
 
 Forks, upstream links and three way merges are specified in 10_later.md L-01 so the format does not block them: step ids are stable and never reused, which is what a per step merge needs.
+
+## Install security
+
+GitHub sends `installation_id` in the setup redirect without proof. Before linking it to a room, the server checks it is in `GET /user/installations` for the signed in user (requested with "Request user authorization during installation"). The `state` parameter carries a signed nonce with the room id, but it does not prove access on its own.
+
+## Errors
+
+| Error | What we do |
+|---|---|
+| 409, or the file sha changed | Reload the file and head, retry up to 2 times, then show the conflict message |
+| 403 or 422 from a branch ruleset or protection | Show the room owner how to add the relay app to the branch bypass list, or pick another branch |
+| Secondary rate limit | Back off and retry. Commits are serialized per branch |
+
+## Commit API
+
+Single files use the contents API. Spike S4 also tries GraphQL `createCommitOnBranch`: several files in one commit, verified by GitHub, with `expectedHeadOid` as the conflict check. If it works, use it for every commit. Commits made with the installation token show as Verified only if we do not set a custom author, so the author stays the app and the member is a `Co-authored-by` line.

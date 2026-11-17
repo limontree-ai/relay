@@ -7,14 +7,14 @@
  ┌──────────────────────┐                  ┌──────────────────────────────────┐
  │ Next.js web app      │                  │ Claude Code (interactive)        │
  │  step list editor    │                  │   skills: join, run-step         │
- │  (Yjs doc)           │                  │   MCP: tandem (stdio, local)     │
+ │  (Yjs doc)           │                  │   MCP: relay (stdio, local)     │
  │  run view, approvals │                  │     heartbeat, poll, report      │
  └──────┬─────────┬─────┘                  └───────────────┬──────────────────┘
         │ realtime │ https                                  │ https (device token)
         ▼          ▼                                        ▼
  ┌──────────────────────────────────────────────────────────────────────────┐
  │ Supabase: Postgres + RLS, Auth (GitHub), Realtime (broadcast, presence,   │
- │ postgres_changes). Run engine = SQL functions. Postgres is the queue      │
+ │ broadcast from DB). Run engine = SQL functions. Postgres is the queue     │
  └──────────────────────────────────▲───────────────────────────────────────┘
                                     │
  ┌──────────────────────────────────┴───────────────────────────────────────┐
@@ -44,12 +44,12 @@
 One repo. It is also the plugin marketplace.
 
 ```
-tandem/
+relay/
   .claude-plugin/marketplace.json
   plugin/                         the Claude Code plugin (see 04_plugin.md)
   apps/web/                       Next.js app and route handlers
   packages/format/                schema, types, validate(), redact()
-  packages/cli/                   npm @ORG/tandem: `login` and `mcp` commands
+  packages/cli/                   npm relay-ai: `login` and `mcp` commands
   supabase/migrations/            SQL: tables, RLS, run engine functions
   supabase/tests/                 SQL tests for RLS and the run engine
   examples/workflows/             sample workflows used in docs and tests
@@ -67,23 +67,24 @@ tandem/
 
 1. Member hits Run. Route handler reads the Yjs doc, converts it to JSON, validates it. If it differs from the last commit it commits a new version. It calls `start_run(workflow_id, commit_sha)`
 2. `start_run` snapshots the steps into `run_steps`, resolves each role to a device, and marks step 1 `ready`
-3. On the device, Claude is inside the join loop and calls `get_next_step`. The MCP server polls `GET /api/device/next-step` every 3 seconds for up to 45 seconds. The server calls `claim_step(device_id)`
+3. On the device, Claude is inside the join loop and calls `get_next_step`. The MCP server polls `GET /api/device/next-step` every 3 seconds for up to 45 seconds. The server calls `claim_step(device_id)`. If the session was started with `--channels`, the MCP server also pushes a channel event the moment a step is ready, so Claude does not wait for the next poll (04_plugin.md, Channels)
 4. Claude writes a short plan and calls `ask_approval`. The server sets the step to `awaiting_approval`, inserts an `approvals` row, and sends Web Push to the device owner
 5. Owner taps Approve on the phone. `ask_approval` returns `approved`. Claude does the work, calling `stream_status` along the way. Each call returns any notes and a stop flag
 6. Claude calls `report_result`. `finish_step` marks it done and marks the next step `ready`. After the last step the run is finished and a route handler commits `runs/<run-id>.json`
-7. Every state change is a row change. The web app subscribes with `postgres_changes`, so everyone sees it live
+7. Every state change is a row change. Triggers call `realtime.broadcast_changes()` on the private `room:<room_id>` channel, so everyone sees it live (Supabase recommends this over `postgres_changes` for scale)
 
 ## Tech choices
 
 | Choice | Picked | Reason | Rejected |
 |---|---|---|---|
 | Language | TypeScript everywhere | Web, MCP server and format share types. One toolchain | Python backend: second language, second deploy, for coordination only |
-| Live editing | Yjs over Supabase Realtime broadcast, persisted to Postgres | No new service. Yjs is the standard CRDT | Liveblocks: paid, another vendor (kept as fallback if spike S3 fails). Hocuspocus: a server to run |
+| Live editing | Yjs over Supabase Realtime broadcast with our own small provider (about 200 lines), persisted to Postgres | No new service. Yjs is the standard CRDT. The existing Supabase Yjs providers are too young or abandoned | Liveblocks: paid, another vendor (kept as fallback if spike S3 fails). Hocuspocus: a server to run. PartyKit hosted and Y-Sweet: shut down in 2026 |
 | Queue | Postgres with `SKIP LOCKED` | Volume is tiny. One place for state | Redis, SQS, Inngest |
-| Device to server | HTTPS polling from the MCP server | Simple, works behind any network, no socket on the device | Realtime from the device: needs device JWTs and reconnect logic. Revisit after spike S1 |
+| Device to server | HTTPS polling from the MCP server, each wait under 2 minutes, plus Claude Code channels push when available | Simple, works behind any network, no socket on the device. Claude Code moves tool calls to the background after 2 minutes | Realtime from the device: needs a Supabase JWT per device and reconnect logic. Revisit after spike S1 if polling cost matters |
 | Auth | Supabase Auth with GitHub | Users need GitHub anyway | Email login |
 | Repo access | GitHub App | Per repo permission, short lived tokens, webhooks | Storing user OAuth tokens |
-| Notifications | Web Push to a home screen web app | No app store, works on iOS 16.4+ | Native app, SMS |
+| Notifications | Web Push to a home screen web app, with the raw `web-push` library | No app store, works on iOS 16.4+. iOS shows no buttons in the notification, so the tap opens the approval page | Native app (later, L-16), SMS, Sendblue iMessage (no buttons, links blocked before a reply, $100 a month per line), FCM and OneSignal (add a layer, fix nothing) |
+| Rate limiting | Token bucket in Postgres, inside the function that checks the device token | One round trip, no new service | Upstash (new service), Vercel WAF (limits by IP, not by device) |
 | Validation | JSON Schema with ajv | Same schema style as the limontree trace | Hand written checks |
 
 ## What we deliberately do not build
@@ -103,4 +104,4 @@ tandem/
 | preview | shared staging project | Vercel preview | staging app |
 | production | production project | Vercel production | production app |
 
-Env vars (names only): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `GITHUB_APP_ID`, `GITHUB_APP_PRIVATE_KEY`, `GITHUB_WEBHOOK_SECRET`, `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `TANDEM_API_URL` (CLI default).
+Env vars (names only): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `GITHUB_APP_ID`, `GITHUB_APP_PRIVATE_KEY`, `GITHUB_WEBHOOK_SECRET`, `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `RELAY_API_URL` (CLI default).

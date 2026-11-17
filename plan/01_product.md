@@ -52,9 +52,10 @@ Each MVP feature traces to one of these. IDs are used in 09_build_plan.md.
 **US-03 Invite.** As a group lead, I share an invite link. Anyone who opens it and signs in becomes an editor.
 - The link can be reset, which makes the old one stop working
 
-**US-04 Install and pair.** As a member, I install the plugin with two commands and pair my device in under 5 minutes.
-- `claude plugin marketplace add ORG/tandem` then `claude plugin install tandem@tandem`
-- `npx @ORG/tandem login` shows a code. I enter it on the web, name the device, and it appears under my devices
+**US-04 Install and pair.** As a member, I install the plugin with one command and pair my device in under 5 minutes.
+- Inside Claude Code: `/plugin install relay --marketplace limontree-ai/relay` (older versions: `claude plugin marketplace add limontree-ai/relay` then `claude plugin install relay@relay`)
+- Codex, Cursor and Gemini CLI (beta): `npx skills add limontree-ai/relay` and `npx relay-ai join <invite-link>`
+- `npx relay-ai login` shows a code. I enter it on the web, name the device, and it appears under my devices
 - My device is not allowed in any room until I switch it on for that room
 
 **US-05 Edit together live.** As a member, I edit a workflow while others edit it, and see their changes and cursors as they type.
@@ -65,7 +66,7 @@ Each MVP feature traces to one of these. IDs are used in 09_build_plan.md.
 - Picking a device for a step sets the device for that step's role in this room. If other steps share the role, the screen says so
 - A step that needs the screen can only be given to a macOS device that reported it can use the screen
 
-**US-07 Join from Claude Code.** As a member, I type `/tandem:join my-room` in Claude Code and my session starts waiting for steps.
+**US-07 Join from Claude Code.** As a member, I type `/relay:join my-room` in Claude Code and my session starts waiting for steps.
 - Claude confirms the room, my device name, and whether the device is allowed
 - The room shows my device as "ready"
 

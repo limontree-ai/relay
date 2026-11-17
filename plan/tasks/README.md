@@ -1,4 +1,4 @@
-# tandem: who builds what
+# relay: who builds what
 
 Two people. Sweeya builds the front. Colby builds the back. Based on `limontree-ai/temp/plan/` (09_build_plan.md chunks C0 to C11, spikes S1 to S6).
 
