@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/mascot/mascot_welcome@2x.png" alt="relay" width="220">
+  <img src="assets/agents/mascot_at_laptop@2x.png" alt="relay" width="260">
 </p>
 
 <h1 align="center">relay</h1>
