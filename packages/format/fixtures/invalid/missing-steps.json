@@ -1,0 +1,20 @@
+{
+  "format": "relay/1",
+  "name": "Demo day submit",
+  "purpose": "Get the hackathon project tested and submitted.",
+  "description": "Pull the code, run the tests and submit.",
+  "tags": [
+    "hackathon"
+  ],
+  "inputs": [
+    {
+      "id": "in-1",
+      "what": "The project repo",
+      "source": "github.com/team/app",
+      "sensitivity": "internal"
+    }
+  ],
+  "never_automate": [
+    "Pressing the final Submit button"
+  ]
+}
