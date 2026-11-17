@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/mascot/mascot_welcome@2x.png" alt="relay" width="220">
+  <img src="assets/agents/mascot_at_laptop@2x.png" alt="relay" width="260">
 </p>
 
 <h1 align="center">relay</h1>
@@ -8,53 +8,28 @@
 
 ---
 
-## what is relay
+relay is a shared to-do list for ai. your group writes it together in the browser. each step says whose computer does the work, and each person's own claude does it, one step after another.
 
-relay is a shared to-do list for ai. your group writes it together in the browser, like a shared doc. each step says whose computer does the work. when you hit run, every step goes to that person's own claude, one after another, like passing a baton.
+> **status:** early. the plan is written and the first building blocks are being made. there is no app to download yet.
 
-> **you:** pull the latest code, run the tests, record a 2 minute demo and upload it to devpost.
->
-> **relay:** step 1 is on jared's mac. step 2 is on jared's mac. step 3 is on maya's laptop. everyone is watching. jared, step 1 is waiting for your yes.
+## what it does
 
-no one gives their password to anyone. no one pays for anyone else's ai. nothing runs on your computer until you say yes.
+- **build together.** everyone edits the same workflow at once and sees who is in which step.
+- **run across computers.** each step goes to the computer you pick, one at a time, and passes its result along.
+- **approve on your phone.** the computer's owner says yes before anything runs.
+- **saved to github.** every workflow and every run is kept in your repo, so you have a history.
+- **no ai bill from us.** your own claude does the work on your own plan.
 
-> **status:** early. the plan is written and the first building blocks are being made. there is no app to try yet. see [status](#status).
+## safe by default
 
-## how it works
+computers are off until their owner switches them on. every step needs a yes. claude never types passwords. anyone can stop a run.
 
-<table>
-<tr>
-<td align="center" width="25%">
-<img src="assets/core/puzzle_pieces_joined@2x.png" width="110" alt=""><br>
-<b>build together</b><br>
-<sub>everyone edits the same list at once. you see who is in which step.</sub>
-</td>
-<td align="center" width="25%">
-<img src="assets/core/computer_laptop@2x.png" width="110" alt=""><br>
-<b>pick a computer</b><br>
-<sub>each step names whose computer runs it.</sub>
-</td>
-<td align="center" width="25%">
-<img src="assets/agents/handoff_arrow@2x.png" width="110" alt=""><br>
-<b>run it</b><br>
-<sub>steps go out one at a time. results pass to the next step.</sub>
-</td>
-<td align="center" width="25%">
-<img src="assets/hardware/phone@2x.png" width="110" alt=""><br>
-<b>approve on your phone</b><br>
-<sub>the computer's owner taps yes before each step.</sub>
-</td>
-</tr>
-</table>
+## more
 
-```mermaid
-flowchart LR
-    group(["your group<br/>edit together"]) --> room{{"relay room"}}
-    room -->|"step 1"| jared["jared's mac<br/>his claude"]
-    room -->|"step 2"| maya["maya's laptop<br/>her claude"]
-    room -->|"every version<br/>and run"| repo[("your github repo")]
-```
+- [the plan](plan/README.md): how it works, every screen, how it stays safe, the order to build
+- [assets](assets/README.md): the mascot and icons
 
+<<<<<<< HEAD
 ## watch it work
 
 | | |
@@ -221,3 +196,6 @@ each asset comes as `name.png` (512px) and `name@2x.png` (1024px). see [`assets/
 </table>
 
 <p align="center"><sub>a limontree project</sub></p>
+=======
+<p align="center"><sub>built by sweeya and colby · a limontree project</sub></p>
+>>>>>>> origin/main
