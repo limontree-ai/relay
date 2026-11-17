@@ -55,18 +55,18 @@ relay/                                    the monorepo root is the marketplace
 Install, from inside Claude Code (one command, then pair):
 
 ```
-/plugin install relay --marketplace limontree-ai/relay
+/plugin install relay --marketplace limontree-ai/temp
 npx relay-ai login
 ```
 
-Older Claude Code: `claude plugin marketplace add limontree-ai/relay` then `claude plugin install relay@relay`. Turn on auto update for the marketplace in `/plugin`. Check everything with `npx relay-ai doctor`: Node version, Claude Code version, signed in to claude.ai, OS, paired, server reachable, computer use available.
+Older Claude Code: `claude plugin marketplace add limontree-ai/temp` then `claude plugin install relay@relay`. Turn on auto update for the marketplace in `/plugin`. Check everything with `npx relay-ai doctor`: Node version, Claude Code version, signed in to claude.ai, OS, paired, server reachable, computer use available.
 
 ### Other agents (Codex, Cursor, Gemini CLI, OpenCode)
 
 The same MCP server and skills work outside Claude Code, as a beta path:
 
 ```
-npx skills add limontree-ai/relay      skills for any agent that reads Agent Skills
+npx skills add limontree-ai/temp      skills for any agent that reads Agent Skills
 npx relay-ai join <invite-link>        pairs if needed, then prints the MCP config for this agent
 ```
 

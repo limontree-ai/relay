@@ -45,7 +45,7 @@ Scope: npm workspaces (`apps/web`, `packages/format`, `packages/cli`), TypeScrip
 Acceptance: `npm ci && npm run lint && npm run typecheck && npm test` pass in CI on an empty app.
 
 Prompt:
-> Set up the relay monorepo as described in plan/02_architecture.md (Monorepo). npm workspaces for apps/web (Next.js, App Router), packages/format and packages/cli. TypeScript strict, ESLint, Prettier, Vitest. Add a Supabase CLI project in supabase/. Add .github/workflows/ci.yml running lint, typecheck, tests, `supabase test db`, gitleaks, and a script that fails if ANTHROPIC_API_KEY appears under apps/ or packages/. Do not add any other dependencies. List anything you guessed.
+> Set up the relay monorepo in this repo (limontree-ai/temp) as described in plan/02_architecture.md (Monorepo). Keep plan/ and PROMPT.md as they are. npm workspaces for apps/web (Next.js, App Router), packages/format and packages/cli. TypeScript strict, ESLint, Prettier, Vitest. Add a Supabase CLI project in supabase/. Add .github/workflows/ci.yml running lint, typecheck, tests, `supabase test db`, gitleaks, and a script that fails if ANTHROPIC_API_KEY appears under apps/ or packages/. Do not add any other dependencies. List anything you guessed.
 
 ### C1 packages/format
 

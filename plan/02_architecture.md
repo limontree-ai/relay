@@ -41,7 +41,7 @@
 
 ## Monorepo
 
-One repo. It is also the plugin marketplace.
+One repo, `limontree-ai/temp` (this one). It is also the plugin marketplace. `plan/` stays at the root.
 
 ```
 relay/
