@@ -1,0 +1,24 @@
+{
+  "name": "relay-spike-s5",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx --env-file-if-exists=.env.local src/server.ts",
+    "keys": "tsx scripts/keys.ts",
+    "icons": "tsx scripts/icons.ts",
+    "send:burst": "tsx --env-file-if-exists=.env.local scripts/burst.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "tsx": "4.23.15",
+    "web-push": "3.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.0",
+    "@types/web-push": "3.6.4",
+    "typescript": "5.9.3",
+    "vitest": "4.0.8"
+  }
+}
