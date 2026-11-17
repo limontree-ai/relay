@@ -23,6 +23,7 @@ Working name in these docs: **tandem**. It is a placeholder (see decisions.md D-
 | [09_build_plan.md](09_build_plan.md) | Starting work. Spikes, then chunks with build prompts |
 | [10_later.md](10_later.md) | Asking "why isn't X in the MVP" |
 | [decisions.md](decisions.md) | Deciding. Every default and every open question |
+| [tasks/](tasks/README.md) | Building with the team. Who builds what (Sweeya front, Colby back), handoffs, order |
 
 ## The MVP in one sentence
 
