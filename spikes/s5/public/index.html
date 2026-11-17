@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>relay push spike</title>
+<style>
+body{font:16px system-ui;max-width:32rem;margin:1rem auto;padding:0 1rem}
+button{font:inherit;padding:.7rem 1rem;margin:.3rem 0;display:block;width:100%}
+.box{border:1px solid #ccc;border-radius:8px;padding:.8rem;margin:1rem 0}
+.warn{background:#fff3cd}.ok{background:#e6f4ea}
+code,pre{background:#f3f3f3;padding:.1rem .3rem}
+td,th{text-align:left;padding:.2rem .5rem}
+</style>
+</head>
+<body>
+<h1>relay push spike</h1>
+<div id="mode" class="box"></div>
+<div class="box">
+  <ol>
+    <li>iPhone: open this page in Safari, tap Share, then Add to Home Screen.</li>
+    <li>Open the app from the new home screen icon (not Safari).</li>
+    <li>Tap Subscribe and allow notifications.</li>
+    <li>Tap Send me a test notification.</li>
+  </ol>
+  <p>Android: Chrome works in a normal tab too.</p>
+</div>
+<button id="sub" disabled>Subscribe</button>
+<button id="test" disabled>Send me a test notification</button>
+<div class="box"><strong>Status:</strong> <span id="status">checking</span></div>
+<div class="box"><strong>Recent latencies</strong>
+  <table><thead><tr><th>kind</th><th>ms</th><th>when</th></tr></thead><tbody id="lat"></tbody></table>
+</div>
+<script src="/app.js" type="module"></script>
+</body>
+</html>

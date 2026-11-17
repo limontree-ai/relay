@@ -1,0 +1,16 @@
+{
+  "format": "relay-run/1",
+  "run_id": "abcd",
+  "workflow_commit": "3f9c1e2",
+  "started_by": "j",
+  "started_at": "2026-11-16T21:30:05Z",
+  "ended_at": "2026-11-16T21:41:52Z",
+  "status": "stopped",
+  "steps": [
+    {
+      "id": "s-1",
+      "role": "dev",
+      "status": "not_run"
+    }
+  ]
+}

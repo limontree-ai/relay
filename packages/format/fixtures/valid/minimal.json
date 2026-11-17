@@ -1,0 +1,16 @@
+{
+  "format": "relay/1",
+  "name": "Tiny",
+  "purpose": "One step.",
+  "steps": [
+    {
+      "id": "s-1",
+      "order": 1,
+      "action": "Run npm test.",
+      "role": "dev",
+      "needs": "shell",
+      "expected_result": "Tests pass.",
+      "reversible": "yes"
+    }
+  ]
+}
