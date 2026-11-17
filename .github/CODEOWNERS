@@ -1,0 +1,16 @@
+# Last matching pattern wins.
+
+# Default owners for everything else
+*                  @Sweeyya @Colby-Threlkeld
+
+# Front: web app, live editing, format
+/apps/web/         @Sweeyya
+/packages/format/  @Sweeyya
+/packages/editor-core/ @Sweeyya
+/packages/data/    @Sweeyya
+
+# Back: database, device API, plugin, github connection
+/supabase/         @Colby-Threlkeld
+/packages/cli/     @Colby-Threlkeld
+/plugin/           @Colby-Threlkeld
+/.claude-plugin/   @Colby-Threlkeld

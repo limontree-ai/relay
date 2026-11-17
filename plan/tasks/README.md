@@ -1,6 +1,6 @@
 # relay: who builds what
 
-Two people. Sweeya builds the front. Colby builds the back. Based on `limontree-ai/temp/plan/` (09_build_plan.md chunks C0 to C11, spikes S1 to S6).
+Two people. Sweeya builds the front. Colby builds the back. Based on `limontree-ai/relay/plan/` (09_build_plan.md chunks C0 to C11, spikes S1 to S6).
 
 - [sweeya.md](sweeya.md): web app, live editor, `packages/format`, repo setup, all screens
 - [colby.md](colby.md): database and run engine, device API, CLI, MCP server and plugin, GitHub App, push sending
@@ -59,4 +59,4 @@ Change any of these only with a heads up to the other person.
 - One branch and one pull request per chunk, named with a prefix: `feat/`, `fix/`, `chore/`
 - Each PR needs one review from the other person. Colby reviews anything touching the editor's persist route; Sweeya reviews anything changing `packages/format` usage. Colby owns every migration
 - A chunk is done when its acceptance tests pass in CI and the PR lists anything guessed
-- Decisions to settle first: D-01 product name is done (relay, npm `relay-ai`). D-02 is done: everything is built in this repo, `limontree-ai/temp`
+- Decisions to settle first: D-01 product name is done (relay, npm `relay-ai`). D-02 is done: everything is built in this repo, `limontree-ai/relay` (renamed from `temp`)

@@ -6,7 +6,7 @@ Prepared for Sweeya Ghanta and Colby. November 16, 2026. Built from the research
 
 A group edits one workflow together in the browser. Each step names a role, and the room maps each role to a member's device. When the group hits Run, each step is handed to the Claude Code session on that device, through our Claude Code plugin (two skills and a small local MCP server). The device owner approves the step from their phone, their own Claude does the work on their own plan, and everyone watches the status live. The workflow and every run result are committed to the group's GitHub repo. Our server only coordinates. It makes no model calls.
 
-Name: **relay** (decided, decisions.md D-01). npm package `relay-ai`, Claude Code plugin `relay@relay`, repo `limontree-ai/temp`.
+Name: **relay** (decided, decisions.md D-01). npm package `relay-ai`, Claude Code plugin `relay@relay`, repo `limontree-ai/relay`.
 
 ## Reading order
 
