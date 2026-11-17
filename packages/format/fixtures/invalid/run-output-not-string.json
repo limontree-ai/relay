@@ -1,0 +1,34 @@
+{
+  "format": "relay-run/1",
+  "run_id": "r7k2p9",
+  "workflow_commit": "3f9c1e2",
+  "started_by": "jaredc",
+  "started_at": "2026-11-16T21:30:05Z",
+  "ended_at": "2026-11-16T21:41:52Z",
+  "status": "succeeded",
+  "note": "Use the final branch",
+  "steps": [
+    {
+      "id": "s-1",
+      "role": "jared-mac",
+      "device": "Jared's MacBook",
+      "status": "done",
+      "approved_by": "jaredc",
+      "started_at": "2026-11-16T21:30:40Z",
+      "ended_at": "2026-11-16T21:32:10Z",
+      "summary": "Pulled main at 81ab2c0. 42 tests passed, 0 failed.",
+      "outputs": {
+        "a": 5
+      }
+    },
+    {
+      "id": "s-2",
+      "role": "jared-mac",
+      "device": "Jared's MacBook",
+      "status": "skipped",
+      "approved_by": "jaredc",
+      "started_at": "2026-11-16T21:30:40Z",
+      "ended_at": "2026-11-16T21:32:10Z"
+    }
+  ]
+}

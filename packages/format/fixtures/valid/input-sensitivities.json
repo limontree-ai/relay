@@ -1,0 +1,54 @@
+{
+  "format": "relay/1",
+  "name": "Demo day submit",
+  "purpose": "Get the hackathon project tested and submitted.",
+  "description": "Pull the code, run the tests and submit.",
+  "tags": [
+    "hackathon"
+  ],
+  "inputs": [
+    {
+      "id": "in-1",
+      "what": "Thing 1",
+      "source": "somewhere",
+      "sensitivity": "public"
+    },
+    {
+      "id": "in-2",
+      "what": "Thing 2",
+      "source": "somewhere",
+      "sensitivity": "internal"
+    },
+    {
+      "id": "in-3",
+      "what": "Thing 3",
+      "source": "somewhere",
+      "sensitivity": "confidential"
+    },
+    {
+      "id": "in-4",
+      "what": "Thing 4",
+      "source": "somewhere",
+      "sensitivity": "restricted"
+    }
+  ],
+  "steps": [
+    {
+      "id": "s-1",
+      "order": 1,
+      "action": "Do thing 1 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 1 is done.",
+      "reversible": "yes",
+      "inputs_used": [
+        "in-1",
+        "in-4"
+      ],
+      "approval": "each"
+    }
+  ],
+  "never_automate": [
+    "Pressing the final Submit button"
+  ]
+}

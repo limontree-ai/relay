@@ -1,0 +1,322 @@
+{
+  "format": "relay/1",
+  "name": "Demo day submit",
+  "purpose": "Get the hackathon project tested and submitted.",
+  "description": "Pull the code, run the tests and submit.",
+  "tags": [
+    "hackathon"
+  ],
+  "inputs": [
+    {
+      "id": "in-1",
+      "what": "The project repo",
+      "source": "github.com/team/app",
+      "sensitivity": "internal"
+    }
+  ],
+  "steps": [
+    {
+      "id": "s-1",
+      "order": 1,
+      "action": "Do thing 1 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 1 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-2",
+      "order": 2,
+      "action": "Do thing 2 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 2 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-3",
+      "order": 3,
+      "action": "Do thing 3 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 3 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-4",
+      "order": 4,
+      "action": "Do thing 4 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 4 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-5",
+      "order": 5,
+      "action": "Do thing 5 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 5 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-6",
+      "order": 6,
+      "action": "Do thing 6 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 6 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-7",
+      "order": 7,
+      "action": "Do thing 7 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 7 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-8",
+      "order": 8,
+      "action": "Do thing 8 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 8 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-9",
+      "order": 9,
+      "action": "Do thing 9 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 9 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-10",
+      "order": 10,
+      "action": "Do thing 10 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 10 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-11",
+      "order": 11,
+      "action": "Do thing 11 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 11 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-12",
+      "order": 12,
+      "action": "Do thing 12 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 12 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-13",
+      "order": 13,
+      "action": "Do thing 13 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 13 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-14",
+      "order": 14,
+      "action": "Do thing 14 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 14 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-15",
+      "order": 15,
+      "action": "Do thing 15 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 15 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-16",
+      "order": 16,
+      "action": "Do thing 16 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 16 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-17",
+      "order": 17,
+      "action": "Do thing 17 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 17 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-18",
+      "order": 18,
+      "action": "Do thing 18 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 18 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-19",
+      "order": 19,
+      "action": "Do thing 19 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 19 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-20",
+      "order": 20,
+      "action": "Do thing 20 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 20 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-21",
+      "order": 21,
+      "action": "Do thing 21 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 21 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-22",
+      "order": 22,
+      "action": "Do thing 22 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 22 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-23",
+      "order": 23,
+      "action": "Do thing 23 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 23 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-24",
+      "order": 24,
+      "action": "Do thing 24 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 24 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-25",
+      "order": 25,
+      "action": "Do thing 25 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 25 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-26",
+      "order": 26,
+      "action": "Do thing 26 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 26 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-27",
+      "order": 27,
+      "action": "Do thing 27 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 27 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-28",
+      "order": 28,
+      "action": "Do thing 28 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 28 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-29",
+      "order": 29,
+      "action": "Do thing 29 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 29 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-30",
+      "order": 30,
+      "action": "Do thing 30 in the project folder.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Thing 30 is done.",
+      "reversible": "yes",
+      "approval": "each"
+    }
+  ],
+  "never_automate": [
+    "Pressing the final Submit button"
+  ]
+}
