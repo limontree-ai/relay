@@ -59,4 +59,4 @@ Change any of these only with a heads up to the other person.
 - One branch and one pull request per chunk, named with a prefix: `feat/`, `fix/`, `chore/`
 - Each PR needs one review from the other person. Colby reviews anything touching the editor's persist route; Sweeya reviews anything changing `packages/format` usage. Colby owns every migration
 - A chunk is done when its acceptance tests pass in CI and the PR lists anything guessed
-- Decisions to settle first: D-01 product name is done (relay, npm `relay-ai`). D-02 which company and repo must be settled by Sweeya and Colby before C0
+- Decisions to settle first: D-01 product name is done (relay, npm `relay-ai`). D-02 is done: everything is built in this repo, `limontree-ai/temp`

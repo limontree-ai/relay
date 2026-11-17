@@ -53,8 +53,8 @@ Each MVP feature traces to one of these. IDs are used in 09_build_plan.md.
 - The link can be reset, which makes the old one stop working
 
 **US-04 Install and pair.** As a member, I install the plugin with one command and pair my device in under 5 minutes.
-- Inside Claude Code: `/plugin install relay --marketplace limontree-ai/relay` (older versions: `claude plugin marketplace add limontree-ai/relay` then `claude plugin install relay@relay`)
-- Codex, Cursor and Gemini CLI (beta): `npx skills add limontree-ai/relay` and `npx relay-ai join <invite-link>`
+- Inside Claude Code: `/plugin install relay --marketplace limontree-ai/temp` (older versions: `claude plugin marketplace add limontree-ai/temp` then `claude plugin install relay@relay`)
+- Codex, Cursor and Gemini CLI (beta): `npx skills add limontree-ai/temp` and `npx relay-ai join <invite-link>`
 - `npx relay-ai login` shows a code. I enter it on the web, name the device, and it appears under my devices
 - My device is not allowed in any room until I switch it on for that room
 

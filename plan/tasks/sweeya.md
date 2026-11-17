@@ -121,8 +121,8 @@ Needs Colby's C6 routes and `scripts/fake-device.ts`.
 **Done when:** a decision on the page unblocks the device's `ask_approval`, and only the owner sees buttons.
 
 ### T12. Setup page
-- [ ] Screen 13 (`/setup`): the one command install from inside Claude Code (`/plugin install relay --marketplace limontree-ai/relay`), the two command form for older versions, `npx relay-ai login` and `npx relay-ai doctor`, all with copy buttons
-- [ ] A tab for Codex, Cursor and Gemini CLI: `npx skills add limontree-ai/relay` and `npx relay-ai join <invite-link>`, marked beta
+- [ ] Screen 13 (`/setup`): the one command install from inside Claude Code (`/plugin install relay --marketplace limontree-ai/temp`), the two command form for older versions, `npx relay-ai login` and `npx relay-ai doctor`, all with copy buttons
+- [ ] A tab for Codex, Cursor and Gemini CLI: `npx skills add limontree-ai/temp` and `npx relay-ai join <invite-link>`, marked beta
 - [ ] Permission prompts: suggest an allowlist for read only commands, and how to start with `--channels`
 - [ ] Turn on notifications, with the iPhone Add to Home Screen explanation first, and a "Send a test notification" button
 
