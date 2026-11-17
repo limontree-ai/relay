@@ -175,11 +175,12 @@ each person keeps their own accounts. nobody shares a password.
 | piece | state |
 | --- | --- |
 | plan and task lists | written, in [`plan/`](plan/README.md) |
-| workflow file format and checker | built, not merged |
-| live editing engine (no screens) | built, not merged |
-| fake backend for building screens | built, not merged |
-| live editing test kit | built. needs a run on real supabase |
-| phone alert test kit | built. needs a run on a real iphone |
+| project setup and automatic checks | built |
+| workflow file format and checker | built, in `packages/format` |
+| live editing engine (no screens) | built, in `packages/editor-core` |
+| fake backend for building screens | built, in `packages/data` |
+| live editing test kit | built, in `spikes/s3`. needs a run on real supabase |
+| phone alert test kit | built, in `spikes/s5`. needs a run on a real iphone |
 | screens (editor, run view, approvals) | waiting on the design system |
 | database, plugin, github connection | next |
 
