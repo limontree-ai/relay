@@ -1,0 +1,50 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  node:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run check:no-key
+      - run: npm run build
+
+  sql:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: check for sql tests
+        id: tests
+        run: |
+          if [ -n "$(find supabase/tests -name '*.sql' | head -1)" ]; then echo "found=true" >> "$GITHUB_OUTPUT"; fi
+      - uses: supabase/setup-cli@v1
+        if: steps.tests.outputs.found == 'true'
+        with:
+          version: latest
+      - name: start supabase
+        if: steps.tests.outputs.found == 'true'
+        run: |
+          supabase start
+          for i in $(seq 1 30); do
+            pg_isready -h 127.0.0.1 -p 54322 && exit 0
+            sleep 2
+          done
+          exit 1
+      - name: sql tests
+        if: steps.tests.outputs.found == 'true'
+        run: supabase test db
+      - name: sql lint
+        if: steps.tests.outputs.found == 'true'
+        run: supabase db lint

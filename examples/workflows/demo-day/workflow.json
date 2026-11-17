@@ -1,0 +1,59 @@
+{
+  "format": "relay/1",
+  "name": "Demo day submit",
+  "purpose": "Get the hackathon project tested, recorded and submitted.",
+  "description": "Pull the latest code, run the tests, record a 2 minute demo and upload it to Devpost.",
+  "tags": [
+    "hackathon"
+  ],
+  "inputs": [
+    {
+      "id": "in-1",
+      "what": "The project repo",
+      "source": "github.com/team/app",
+      "sensitivity": "internal"
+    }
+  ],
+  "steps": [
+    {
+      "id": "s-1",
+      "order": 1,
+      "action": "In ~/code/app, pull main and run npm test. Report the number of passing and failing tests.",
+      "role": "jared-mac",
+      "needs": "shell",
+      "expected_result": "Tests ran and all pass.",
+      "reversible": "yes",
+      "tools": [
+        "git",
+        "npm"
+      ],
+      "inputs_used": [
+        "in-1"
+      ],
+      "approval": "each"
+    },
+    {
+      "id": "s-2",
+      "order": 2,
+      "action": "Open the app at localhost:3000 and record a 2 minute screen demo with QuickTime. Save it to the Demo folder in Google Drive.",
+      "role": "jared-mac",
+      "needs": "screen",
+      "expected_result": "A demo video of about 2 minutes is in the Drive folder. Report its link.",
+      "reversible": "yes",
+      "approval": "each"
+    },
+    {
+      "id": "s-3",
+      "order": 3,
+      "action": "In the browser, open our Devpost draft and add the demo link from the last step. Do not press Submit.",
+      "role": "maya-laptop",
+      "needs": "browser",
+      "expected_result": "The draft shows the demo link and is not submitted.",
+      "reversible": "yes",
+      "approval": "each"
+    }
+  ],
+  "never_automate": [
+    "Pressing the final Submit button on Devpost"
+  ]
+}
