@@ -47,14 +47,6 @@ no one gives their password to anyone. no one pays for anyone else's ai. nothing
 </tr>
 </table>
 
-```mermaid
-flowchart LR
-    group(["your group<br/>edit together"]) --> room{{"relay room"}}
-    room -->|"step 1"| jared["jared's mac<br/>his claude"]
-    room -->|"step 2"| maya["maya's laptop<br/>her claude"]
-    room -->|"every version<br/>and run"| repo[("your github repo")]
-```
-
 ## watch it work
 
 | | |
@@ -86,27 +78,6 @@ each person installs the relay plugin in their own claude code. their claude doe
 | **shell** (commands, files, code) | mac, windows or linux |
 | **browser** | any computer where claude has a browser tool |
 | **screen** (click and type in apps) | a mac with claude's computer use |
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor you as group
-    participant web as relay web app
-    participant srv as relay server
-    participant dev as jared's claude code
-    actor owner as jared's phone
-    you->>web: edit the workflow, hit run
-    web->>srv: start the run
-    dev->>srv: any step for me?
-    srv-->>dev: step 1
-    dev->>srv: here is my plan
-    srv->>owner: approve this step?
-    owner-->>srv: yes
-    dev->>dev: does the work
-    dev->>srv: done, here is the result
-    srv-->>web: everyone sees it
-    srv-->>srv: saves the result to github
-```
 
 ## safety
 
