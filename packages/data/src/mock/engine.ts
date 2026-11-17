@@ -129,8 +129,9 @@ export function createMockApi(opts: MockOptions = {}): MockApi {
 
   const profile = (id: string) => store.profiles.find((p) => p.id === id) ?? fail('not_found', 'Profile not found')
   const publicDevice = (d: Device): PublicDevice => {
-    const { token_hash: _t, ...rest } = d
-    return clone(rest)
+    const rest: Partial<Device> = { ...d }
+    delete rest.token_hash
+    return clone(rest) as PublicDevice
   }
   const device = (id: string) => store.devices.find((d) => d.id === id) ?? fail('not_found', 'Device not found')
   const roomById = (id: string) => store.rooms.find((r) => r.id === id) ?? fail('not_found', 'Room not found')

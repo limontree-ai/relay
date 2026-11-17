@@ -19,7 +19,7 @@ describe("fractional index", () => {
 
   it("random insertion keeps strict order and no trailing zeros", () => {
     const r = rng(7);
-    let list: string[] = [generateKeyBetween(null, null)];
+    const list: string[] = [generateKeyBetween(null, null)];
     for (let i = 0; i < 2000; i++) {
       const pos = Math.floor(r() * (list.length + 1));
       const k = generateKeyBetween(list[pos - 1] ?? null, list[pos] ?? null);

@@ -28,7 +28,7 @@ function looksRandom(v: string): boolean {
   return /\d/.test(v) && /[A-Za-z]/.test(v);
 }
 
-function scan(text: string, re: RegExp, kind: SecretKind, group: number, out: SecretMatch[], keep = (_v: string) => true) {
+function scan(text: string, re: RegExp, kind: SecretKind, group: number, out: SecretMatch[], keep: (v: string) => boolean = () => true) {
   for (const m of text.matchAll(re)) {
     const value = m[group];
     const span = m.indices?.[group];

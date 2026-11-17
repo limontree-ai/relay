@@ -169,7 +169,10 @@ export function createProvider(opts: ProviderOptions): Provider {
     const total = entry.parts as Uint8Array[];
     const buf = new Uint8Array(total.reduce((s, c) => s + c.length, 0));
     let off = 0;
-    for (const c of total) (buf.set(c, off), (off += c.length));
+    for (const c of total) {
+      buf.set(c, off);
+      off += c.length;
+    }
     const tail = (entry as any).tail ?? {};
     dispatch(p.e, { ...tail, u: toBase64(buf) });
   });
