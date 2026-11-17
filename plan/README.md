@@ -1,6 +1,6 @@
 # Plan: live multiplayer agent workflows
 
-Prepared for Sweeya Ghanta and Natasha Narine. November 16, 2026. Built from the research brief "live multiplayer agent workflows, stored in a repo, run on your own Claude".
+Prepared for Sweeya Ghanta and Colby. November 16, 2026. Built from the research brief "live multiplayer agent workflows, stored in a repo, run on your own Claude".
 
 ## Summary
 

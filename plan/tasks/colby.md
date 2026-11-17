@@ -120,7 +120,7 @@ Needs S1 to be a go, plus Sweeya's C1 (`packages/format`).
 
 **Prompt:** use the C5 prompt in `plan/09_build_plan.md`.
 
-**Needs from Natasha first:** D-01 product name, before the plugin and npm package are published.
+D-01 is decided: the plugin is `relay` and the npm package is `relay-ai`.
 
 ### T9. Push sending (C9 back)
 - [ ] `POST /api/push/subscribe` storing `push_subscriptions`
