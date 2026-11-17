@@ -41,10 +41,11 @@ States: loading, empty workflow ("Add the first step"), read only (viewers and p
 
 ### Live editing model
 
-- One Yjs document per workflow: a `Y.Map` for top fields, a `Y.Array` of `Y.Map` for steps, `Y.Text` for every free text field
-- Transport: Supabase Realtime broadcast on `wf:<workflow_id>`. Awareness (cursor, selected step, color) on the same channel
+- One Yjs document per workflow: a `Y.Map` for top fields and a `Y.Map` of steps keyed by step id. Each step is a `Y.Map` with a fractional `index` string; order is "sort by index". Reordering sets one `index`, because `Y.Array` has no move and delete plus insert loses edits
+- Short fields (name, role, expected result, enums) are plain strings in the `Y.Map`. Only `action` and `description` use `Y.Text`, bound with `y-textarea` for remote cursors. Presence shows which field each person is in
+- Transport: our own small provider over Supabase Realtime broadcast on `wf:<workflow_id>`. Awareness (cursor, selected step, color) on the same channel, throttled to 10 updates a second
 - Load: fetch `ydoc` from the database, apply, then subscribe
-- Persist: every client sends its updates to `POST /api/workflows/:id/ydoc`, debounced 1 second. The server merges, so concurrent saves never lose an update
+- Persist: every client sends its updates to `POST /api/workflows/:id/ydoc`, debounced 1 second. The server merges inside one transaction with `SELECT ... FOR UPDATE` on the workflow row, so concurrent saves never lose an update. Every 200 updates it compacts: load into a `Y.Doc`, re-encode, store
 - To JSON: `toWorkflowJson(ydoc)` in `packages/format`. Used by the server for `doc`, save, and run
 - Presence shows who is in the workflow and which step they have selected. A colored bar marks a step someone else is in. Text cursors show inside fields
 
@@ -73,11 +74,16 @@ Built for a phone. Opened from the push or from the room.
 - Buttons: Approve, Approve the rest of this run, Deny
 - After a decision: the result and a link to the run view
 - Only the device owner sees buttons. Others see the waiting state
+- The page needs a signed in session. The approval id finds the approval; it is not a password. Each approval is single use and expires after 5 minutes
+- "Approve the rest of this run" and steps marked "Cannot be undone" ask for a passkey (Face ID or Touch ID) before they take effect
 
 ## Notifications
 
-- `/setup` asks to turn on notifications. On iPhone it first explains Add to Home Screen, which Web Push needs
+- `/setup` asks to turn on notifications. On iPhone it first explains Add to Home Screen, which Web Push needs. A "Send a test notification" button proves it works
 - Pushes: approval needed, a step is waiting for your Claude, your step stalled
+- iOS shows no buttons inside a notification, so every push opens a page. Android also gets Approve and Deny actions in the notification as a bonus
+- Every push must show a notification. iOS revokes a subscription after a few silent pushes
+- A push that fails with 404, 410, 403 or 400 deletes that subscription
 - Each push opens the right page
 
 ## Tests

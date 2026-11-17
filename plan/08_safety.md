@@ -9,11 +9,11 @@ An agent acting on someone else's computer is the biggest risk in this product. 
 | 1. Pairing | A device exists only after its owner pairs it while signed in | 04_plugin.md |
 | 2. Room switch | Each device is off in every room until its owner turns it on. Off again in one click | `room_devices.allowed` |
 | 3. Capability check | Screen steps go only to Macs where Claude has computer use | routing |
-| 4. Step approval | The owner approves every step, seeing the step text and Claude's plan. "Approve the rest of this run" covers only this run on this device | `approvals` |
+| 4. Step approval | The owner approves every step, signed in, seeing the step text and Claude's plan. Single use, 5 minute expiry. "Approve the rest of this run" and steps that cannot be undone need a passkey. It covers only this run on this device | `approvals` |
 | 5. Claude Code's own rules | Its permission prompts, computer use app approvals and safety checks still apply. We never ask users to skip them | the member's settings |
 | 6. Skill rules | Spectr's rules, written into the run-step skill: asks first, never types passwords, sees only what it needs, stop means stop | run-step SKILL.md |
 | 7. Stop | Any member can stop a run. The device gets `stop: true` on its next call, at most 30 seconds later in normal use | `stop_run` |
-| 8. Revoke | The owner revokes a device on the web or with `tandem logout`. Its token stops working at once | `devices.revoked_at` |
+| 8. Revoke | The owner revokes a device on the web or with `npx relay-ai logout`. Its token stops working at once | `devices.revoked_at` |
 
 ## Threats
 

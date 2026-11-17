@@ -103,9 +103,9 @@ Device routes take `Authorization: Bearer <device token>`. The handler hashes it
 
 | Method and path | Auth | Body | Returns |
 |---|---|---|---|
-| POST /api/device/pair/start | none, rate limited by IP | `{ name, platform }` | `{ pair_code, poll_token, verify_url }` |
+| POST /api/device/pair/start | none, rate limited by IP | `{ name, platform }` | `{ pair_code, poll_token, verify_url, interval: 3, expires_in: 600 }` |
 | POST /api/device/pair/confirm | user | `{ pair_code, name }` | `{ ok }` |
-| POST /api/device/pair/poll | poll token | `{ poll_token }` | `{ status: "waiting" }` or `{ device_id, token }` once |
+| POST /api/device/pair/poll | poll token | `{ poll_token }` | `{ error: "authorization_pending" }`, `{ error: "slow_down" }` (poll faster than `interval`), `{ error: "expired_token" }`, or `{ device_id, token }` once. Modeled on RFC 8628, like the GitHub and Vercel CLIs |
 | POST /api/device/revoke | device | none | `{ ok }` |
 | POST /api/device/join | device | `{ room, capabilities }` | join_room output |
 | POST /api/device/heartbeat | device | none | `{ ok }` |
@@ -132,7 +132,7 @@ Push is sent from inside the route handler or function caller that causes it (st
 |---|---|---|---|
 | `room:<room_id>` | presence | `{ user_id, name, avatar, workflow_id, step_id }` | members |
 | `wf:<workflow_id>` | broadcast | Yjs updates and awareness (base64) | members |
-| `runs`, `run_steps`, `run_events`, `approvals`, `devices` | postgres_changes filtered by `room_id` | row changes | members, through RLS |
+| `room:<room_id>` | broadcast from the database | row changes to `runs`, `run_steps`, `run_events`, `approvals`, `devices`, sent by triggers calling `realtime.broadcast_changes()` | members, through RLS on `realtime.messages` |
 
 Realtime authorization uses private channels with RLS policies on `realtime.messages` so only members can join a room's channels.
 
@@ -146,9 +146,14 @@ Realtime authorization uses private channels with RLS policies on `realtime.mess
 | Steps per workflow | 30 |
 | Active runs per workflow | 1 |
 | Status messages per step | 200 (older ones are kept, new ones are dropped with one system event) |
-| Device API | 60 requests a minute per device |
+| Device API | 60 requests a minute per device, as a token bucket in Postgres inside the token check (`device_rate` table) |
 
 ## Cleanup
 
 - `device_pairings` older than 1 hour: deleted by pg_cron
 - `run_events` older than 90 days: deleted. The run record in the repo is the permanent copy
+
+## Testing notes
+
+- CI: `supabase/setup-cli`, `supabase start`, wait for `pg_isready`, then `supabase test db`. Add `supabase db lint`
+- Test RLS as the `authenticated` role with `request.jwt.claims` set. The superuser bypasses RLS, so tests that run as it prove nothing

@@ -1,12 +1,12 @@
 # Plan: live multiplayer agent workflows
 
-Prepared for Sweeya Ghanta and Natasha Narine. November 16, 2026. Built from the research brief "live multiplayer agent workflows, stored in a repo, run on your own Claude".
+Prepared for Sweeya Ghanta and Colby. November 16, 2026. Built from the research brief "live multiplayer agent workflows, stored in a repo, run on your own Claude".
 
 ## Summary
 
 A group edits one workflow together in the browser. Each step names a role, and the room maps each role to a member's device. When the group hits Run, each step is handed to the Claude Code session on that device, through our Claude Code plugin (two skills and a small local MCP server). The device owner approves the step from their phone, their own Claude does the work on their own plan, and everyone watches the status live. The workflow and every run result are committed to the group's GitHub repo. Our server only coordinates. It makes no model calls.
 
-Working name in these docs: **tandem**. It is a placeholder (see decisions.md D-01).
+Name: **relay** (decided, decisions.md D-01). npm package `relay-ai`, Claude Code plugin `relay@relay`, repo `limontree-ai/relay`.
 
 ## Reading order
 
@@ -23,6 +23,7 @@ Working name in these docs: **tandem**. It is a placeholder (see decisions.md D-
 | [09_build_plan.md](09_build_plan.md) | Starting work. Spikes, then chunks with build prompts |
 | [10_later.md](10_later.md) | Asking "why isn't X in the MVP" |
 | [decisions.md](decisions.md) | Deciding. Every default and every open question |
+| [research_summary.md](research_summary.md) | Checking why a tool or pattern was picked. Six research reports, Nov 17, 2026 |
 | [tasks/](tasks/README.md) | Building with the team. Who builds what (Sweeya front, Colby back), handoffs, order |
 
 ## The MVP in one sentence

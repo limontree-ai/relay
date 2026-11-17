@@ -25,7 +25,7 @@ The file holds no people, device ids or room ids. That keeps it forkable. Who ru
 
 ```json
 {
-  "format": "tandem/1",
+  "format": "relay/1",
   "name": "Demo day submit",
   "purpose": "Get the hackathon project tested, recorded and submitted.",
   "description": "Pull the latest code, run the tests, record a 2 minute demo and upload it to Devpost.",
@@ -75,7 +75,7 @@ The file holds no people, device ids or room ids. That keeps it forkable. Who ru
 
 | Field | Type | Rule | From the trace? |
 |---|---|---|---|
-| `format` | string | Must be `tandem/1` | New |
+| `format` | string | Must be `relay/1` | New |
 | `name` | string | 1 to 80 characters | Yes |
 | `purpose` | string | 1 to 300 characters | Yes |
 | `description` | string | 0 to 2,000 characters | Yes |
@@ -91,7 +91,7 @@ The file holds no people, device ids or room ids. That keeps it forkable. Who ru
 | `steps[].reversible` | enum | `yes`, `no`, `unsure` | Yes |
 | `steps[].tools` | string[] | Optional hints for Claude | Yes |
 | `steps[].inputs_used` | string[] | Must match `inputs[].id` | Yes |
-| `steps[].approval` | enum | `each` only in tandem/1. Reserved for policies later | New |
+| `steps[].approval` | enum | `each` only in relay/1. Reserved for policies later | New |
 | `never_automate` | string[] | Things Claude must never do in this workflow. Passed to every step | Yes |
 
 `needs` routing rule:
@@ -117,7 +117,7 @@ Written once, when a run ends. Never edited.
 
 ```json
 {
-  "format": "tandem-run/1",
+  "format": "relay-run/1",
   "run_id": "r7k2p9",
   "workflow_commit": "3f9c1e2",
   "started_by": "jaredc",
@@ -150,4 +150,4 @@ Written once, when a run ends. Never edited.
 
 - A version is a commit that changes `workflow.json`
 - A run always records `workflow_commit`. History groups runs by that commit (06_web.md, History)
-- The format string is versioned. tandem/1 readers reject unknown fields. A tandem/2 reader must read tandem/1
+- The format string is versioned. relay/1 readers reject unknown fields. A relay/2 reader must read relay/1

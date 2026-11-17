@@ -4,7 +4,7 @@ Use this prompt as written. It is the refined version of the founders' request.
 
 ---
 
-You are a staff engineer and product lead. Write the full planning set for a new product. The research brief is "live multiplayer agent workflows, stored in a repo, run on your own Claude", prepared for Sweeya Ghanta and Natasha Narine on November 16, 2026. It builds on limontree (trace format, rules, versions) and Spectr (computer use, device routing, approvals).
+You are a staff engineer and product lead. Write the full planning set for a new product. The research brief is "live multiplayer agent workflows, stored in a repo, run on your own Claude", prepared for Sweeya Ghanta and Colby on November 16, 2026. It builds on limontree (trace format, rules, versions) and Spectr (computer use, device routing, approvals).
 
 ## What to produce
 

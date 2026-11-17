@@ -22,18 +22,19 @@ You can start today. Nothing in phases 1 and 2 waits on Colby. See [README.md](R
 ### T2. S3 spike: Yjs over Supabase Realtime
 - [ ] 3 browsers edit one Yjs doc for 10 minutes over a Realtime broadcast channel, with forced disconnects
 - [ ] Record payload sizes against the broadcast size limit, reconnect behavior, and whether merged updates persist with no lost edits
+- [ ] Measure awareness messages a second with 12 tabs on our Supabase plan (Free: 100 a second including fan out). Fire concurrent persist requests and check none is lost. Try concurrent drag reorder with fractional indexes
 - [ ] Write `spikes/s3/README.md` with a go, change or stop call. Fallback: the Liveblocks Yjs provider
 
 ### T3. S5 spike: Web Push on iPhone
 - [ ] VAPID push to an iPhone home screen web app and to Android. Tap opens a test approval page
-- [ ] Measure time to arrive (go if under 10 seconds). Write `spikes/s5/README.md`. Fallback: email
+- [ ] Measure time to arrive (go if under 10 seconds). Check the subscription still works after 3 days, delivery in Focus mode, and resubscribe after removing the home screen app. Always show a notification (iOS revokes after silent pushes). Write `spikes/s5/README.md`. Fallback: email, then a Telegram bot (L-18)
 
 ---
 
 ## Phase 2: format, mock data, editor
 
 ### T4. C1 `packages/format`
-- [ ] `workflow.schema.json` (`tandem/1`) and `run.schema.json` (`tandem-run/1`) exactly as in `03_workflow_format.md`
+- [ ] `workflow.schema.json` (`relay/1`) and `run.schema.json` (`relay-run/1`) exactly as in `03_workflow_format.md`
 - [ ] Generated TS types, `validate()` returning `{ path, message, level }`, `redact()`, `stringify()` with stable key order
 - [ ] `toWorkflowJson(ydoc)` and `fromWorkflowJson(json)`
 - [ ] Port the secret patterns from limontree's pattern rules
@@ -53,8 +54,8 @@ So you're not blocked on C2.
 
 ### T6. C7 editor, part 1: live editing
 - [ ] Screen 5 (`/r/:slug/w/:wf`): header, step list, side panel, workflow fields, add, delete, reorder
-- [ ] Yjs model: `Y.Map` for top fields, `Y.Array` of `Y.Map` for steps, `Y.Text` for free text
-- [ ] A small Yjs provider over Realtime broadcast on `wf:<workflow_id>`, with awareness (cursor, selected step, color), based on S3
+- [ ] Yjs model: `Y.Map` for top fields, a `Y.Map` of steps keyed by step id, each with a fractional `index` (reorder sets one key; `Y.Array` has no move). Short fields as plain strings; `Y.Text` with `y-textarea` only for `action` and `description`
+- [ ] Our own small Yjs provider (about 200 lines) over Realtime broadcast on `wf:<workflow_id>`, with awareness (cursor, selected step, color) throttled to 10 a second, based on S3. Do not depend on the `y-supabase` packages. Drag to reorder with dnd-kit
 - [ ] Validation problems under each step from `validate()`
 - [ ] States: loading, empty, read only, offline
 
@@ -78,7 +79,7 @@ Starts when Colby's C2 merges and he publishes generated DB types.
 **Prompt:** use the C3 prompt in `plan/09_build_plan.md`.
 
 ### T8. C7 editor, part 2: persist and bind devices
-- [ ] `POST /api/workflows/:id/ydoc`: merge with `Y.mergeUpdates`, update `doc`, `dirty`, `edit_log`. Debounce client sends by 1 second
+- [ ] `POST /api/workflows/:id/ydoc`: merge with `Y.mergeUpdates` inside one transaction with `SELECT ... FOR UPDATE` on the workflow row, update `doc`, `dirty`, `edit_log`. Compact every 200 updates (load, re-encode, store). Debounce client sends by 1 second
 - [ ] Load `ydoc` from the database, apply, then subscribe
 - [ ] Saved state in the header: Saving…, Saved but not in the repo, In the repo at `<sha>`
 - [ ] "Runs on" control writing `role_bindings`. Show "Also changes steps 2 and 4" for shared roles. Grey out devices that can't do the step's `needs`, with the reason
@@ -104,20 +105,26 @@ Needs Colby's C6 routes and `scripts/fake-device.ts`.
 - [ ] Status text exactly as in `06_web.md`: Waiting, Waiting for Maya's Claude, Asking Maya, Running, Done, Failed, Stalled, Skipped, Stopped, Not run
 - [ ] Expand a row: Claude's plan, live feed, summary, outputs
 - [ ] Note box under the running step; Retry and Skip on stalled steps
-- [ ] Live updates with `postgres_changes` on run tables
+- [ ] Live updates from the private `room:<room_id>` broadcast channel (Colby's database triggers), not `postgres_changes`
 
 **Done when:** Playwright with the fake device runs a 3 step workflow, a note reaches the fake device, Stop ends it, and a stalled step can be retried.
 
 ### T11. Approval page and push sign up (C9 front)
 - [ ] Screen 12 (`/a/:approval`), phone first: who wants to run what on whose device, full step text, Claude's plan, needs badges, "Cannot be undone" badge
 - [ ] Buttons Approve, Approve the rest of this run, Deny, calling `decide_approval`. Only the device owner sees buttons
+- [ ] The page needs a signed in session; the id is a lookup, not a password. Single use, 5 minute expiry (enforced by Colby's function; show the expired state)
+- [ ] Passkey (Face ID or Touch ID) confirm for "Approve the rest of this run" and steps that cannot be undone
+- [ ] Android: Approve and Deny actions inside the notification are a bonus; iOS has none, so the page is the main path
 - [ ] Web app manifest and service worker so it works as an iPhone home screen app
 - [ ] Push subscribe calls `POST /api/push/subscribe` (Colby builds the route)
 
 **Done when:** a decision on the page unblocks the device's `ask_approval`, and only the owner sees buttons.
 
 ### T12. Setup page
-- [ ] Screen 13 (`/setup`): the two plugin install commands and `npx @ORG/tandem login` with copy buttons; turn on notifications, with the iPhone Add to Home Screen explanation first
+- [ ] Screen 13 (`/setup`): the one command install from inside Claude Code (`/plugin install relay --marketplace limontree-ai/relay`), the two command form for older versions, `npx relay-ai login` and `npx relay-ai doctor`, all with copy buttons
+- [ ] A tab for Codex, Cursor and Gemini CLI: `npx skills add limontree-ai/relay` and `npx relay-ai join <invite-link>`, marked beta
+- [ ] Permission prompts: suggest an allowlist for read only commands, and how to start with `--channels`
+- [ ] Turn on notifications, with the iPhone Add to Home Screen explanation first, and a "Send a test notification" button
 
 ---
 

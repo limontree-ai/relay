@@ -6,12 +6,12 @@ Spikes first. They test the assumptions that would kill the product. Each spike 
 
 | # | Question | How | Go if | If not |
 |---|---|---|---|---|
-| S1 | Can an interactive Claude Code session reliably loop on an MCP tool, run steps handed to it, and report back? | Stub MCP server with the 5 tools and a local queue of 10 steps (shell, browser, one screen step). Run on 2 Macs and 1 Windows laptop. Record tool timeouts, context used per step, permission prompts hit, and whether Claude stays in the loop | 9 of 10 steps finish, the loop survives 10 steps, no tool timeouts at 45 seconds | Shorter waits; skill tells user to `/compact`; or check Claude Code's channels feature (server pushed messages) as the trigger instead of a loop |
+| S1 | Can an interactive Claude Code session reliably loop on an MCP tool, run steps handed to it, and report back? | Stub MCP server with the 5 tools and a local queue of 10 steps (shell, browser, one screen step). Run on 2 Macs and 1 Windows laptop. Record tool timeouts, context used per step, permission prompts hit, and whether Claude stays in the loop | 9 of 10 steps finish, the loop survives 10 steps, no tool call moved to the background. Also test: channels push with `--channels`, permission prompt relay through channels, the news hook, and the Codex path with `npx relay-ai join` | Shorter waits; skill tells user to `/compact`; make channels the default trigger |
 | S2 | Does computer use run screen steps from a tool result well enough? | 5 screen steps (open app, fill a form, record screen) on a Pro plan Mac. Time and plan usage per step | 4 of 5 finish under 5 minutes each | Screen steps are marked beta; examples lean on shell and browser |
-| S3 | Does Yjs over Supabase Realtime broadcast hold up? | 3 browsers editing one doc for 10 minutes, with disconnects; check payload sizes, merge persistence, reconnect | No lost edits, updates under the broadcast size limit | Liveblocks Yjs provider (paid, drop in) |
-| S4 | GitHub App basics | Install, contents API commit, push webhook with our own commit filtered | Works end to end on a test repo | Fix before C10 |
-| S5 | Web Push on iPhone home screen app | VAPID push to iOS and Android, tap opens the approval page | Arrives in under 10 seconds | Email as the fallback notification |
-| S6 | Plugin install commands | Publish the marketplace from a test repo; install on a clean machine | Two commands install it | Adjust docs and `/setup` |
+| S3 | Does Yjs over Supabase Realtime broadcast hold up? | 3 browsers editing one doc for 10 minutes, with disconnects; check payload sizes, merge persistence, reconnect. Measure awareness messages a second with 12 tabs on our Supabase plan. Fire concurrent persist requests and check none is lost. Concurrent drag reorder with fractional indexes | No lost edits, updates under the broadcast size limit, under the plan's messages a second | Liveblocks Yjs provider (paid, drop in) |
+| S4 | GitHub App basics | Install with user authorization, verify `installation_id` against the user's installations, contents API commit, `createCommitOnBranch` commit, push webhook with our own commit filtered by `sender.login`, a commit blocked by a ruleset | Works end to end on a test repo | Fix before C10 |
+| S5 | Web Push on iPhone home screen app | VAPID push to iOS and Android, tap opens the approval page. Check the subscription still works after 3 days, delivery in Focus mode, and resubscribe after removing the home screen app | Arrives in under 10 seconds | Email as the fallback notification |
+| S6 | Plugin install commands | Publish the marketplace from a test repo; install on a clean machine with the one command `/plugin install relay --marketplace <repo>`; `claude plugin validate . --strict` passes | One command installs it | Adjust docs and `/setup` |
 
 S1, S3 and S6 can run in parallel. S2 needs S1's stub.
 
@@ -45,11 +45,11 @@ Scope: npm workspaces (`apps/web`, `packages/format`, `packages/cli`), TypeScrip
 Acceptance: `npm ci && npm run lint && npm run typecheck && npm test` pass in CI on an empty app.
 
 Prompt:
-> Set up the tandem monorepo as described in plan/02_architecture.md (Monorepo). npm workspaces for apps/web (Next.js, App Router), packages/format and packages/cli. TypeScript strict, ESLint, Prettier, Vitest. Add a Supabase CLI project in supabase/. Add .github/workflows/ci.yml running lint, typecheck, tests, `supabase test db`, gitleaks, and a script that fails if ANTHROPIC_API_KEY appears under apps/ or packages/. Do not add any other dependencies. List anything you guessed.
+> Set up the relay monorepo as described in plan/02_architecture.md (Monorepo). npm workspaces for apps/web (Next.js, App Router), packages/format and packages/cli. TypeScript strict, ESLint, Prettier, Vitest. Add a Supabase CLI project in supabase/. Add .github/workflows/ci.yml running lint, typecheck, tests, `supabase test db`, gitleaks, and a script that fails if ANTHROPIC_API_KEY appears under apps/ or packages/. Do not add any other dependencies. List anything you guessed.
 
 ### C1 packages/format
 
-Scope: `workflow.schema.json` (tandem/1) and `run.schema.json` (tandem-run/1), generated TS types, `validate()`, `redact()`, `stringify()` (stable key order), `toWorkflowJson(ydoc)` and `fromWorkflowJson(json)`. Ported secret patterns from limontree rules. Fixtures in `examples/workflows/` and `packages/format/fixtures/{valid,invalid}`.
+Scope: `workflow.schema.json` (relay/1) and `run.schema.json` (relay-run/1), generated TS types, `validate()`, `redact()`, `stringify()` (stable key order), `toWorkflowJson(ydoc)` and `fromWorkflowJson(json)`. Ported secret patterns from limontree rules. Fixtures in `examples/workflows/` and `packages/format/fixtures/{valid,invalid}`.
 
 Acceptance: every rule in 03_workflow_format.md has a passing and a failing fixture; `stringify(parse(x)) === x` for valid fixtures; Yjs round trip is lossless.
 
@@ -81,11 +81,11 @@ Scope: pair routes, `/pair` and `/devices` screens, `packages/cli` with `login`,
 Acceptance: CLI integration test against local Supabase: start, confirm as a user, poll returns a token once, token works, revoke kills it, expired codes fail.
 
 Prompt:
-> Build device pairing from plan/04_plugin.md (Pairing) and the pair routes in plan/05_server.md. Tokens are 32 random bytes base64url with a tdm_ prefix; store only sha256. Write credentials with mode 0600 at the paths in the doc. Build /pair and /devices from plan/06_web.md. Rate limit pair/start by IP. Tests as in plan/09_build_plan.md C4.
+> Build device pairing from plan/04_plugin.md (Pairing) and the pair routes in plan/05_server.md. Tokens are 32 random bytes base64url with a rly_ prefix; store only sha256. Write credentials with mode 0600 at the paths in the doc. Build /pair and /devices from plan/06_web.md. Rate limit pair/start by IP. Tests as in plan/09_build_plan.md C4.
 
 ### C5 MCP server and plugin
 
-Scope: `tandem mcp` with the 5 tools, heartbeat, polling, plugin files and both skills exactly as in 04_plugin.md.
+Scope: `relay-ai mcp` with the 5 tools, heartbeat, polling, the channels push, the news hook, `doctor` and `join` commands, plugin files and both skills exactly as in 04_plugin.md. Only dependency: the MCP SDK.
 
 Acceptance: tool tests with a fake device API; a scripted end to end run on a real Mac with Claude Code: join, two steps, approve, report. Install from the marketplace on a clean machine.
 
@@ -112,12 +112,12 @@ Prompt:
 
 ### C8 Run view
 
-Scope: Run button (calls the runs route), screen 6, live updates with postgres_changes, notes, stop, retry, skip.
+Scope: Run button (calls the runs route), screen 6, live updates from the `room:<room_id>` broadcast channel, notes, stop, retry, skip.
 
 Acceptance: Playwright with a fake device script runs a 3 step workflow; a note reaches the fake device; stop ends it; a stalled step can be retried.
 
 Prompt:
-> Build the Run button and the run view (screen 6) from plan/06_web.md. Subscribe to run tables with postgres_changes. Notes, stop, retry and skip call the RPC functions from C2. Add a test script, scripts/fake-device.ts, that plays the device side against the device API, and use it in Playwright.
+> Build the Run button and the run view (screen 6) from plan/06_web.md. Subscribe to the private room:<room_id> broadcast channel fed by database triggers. Notes, stop, retry and skip call the RPC functions from C2. Add a test script, scripts/fake-device.ts, that plays the device side against the device API, and use it in Playwright.
 
 ### C9 Approvals and push
 
